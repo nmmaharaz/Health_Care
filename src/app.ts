@@ -1,8 +1,8 @@
 import express, { type Request, type Response } from "express"
 import cors from "cors"
-import { globalError } from "./middleware/globalErrorHandlers.js"
-import { envVars } from "./config/env.js"
-import { router } from "./routes/route.js"
+import { globalError } from "./app/middleware/globalErrorHandlers.js"
+import { envVars } from "./app/config/env.js"
+import { router } from "./app/routes/route.js"
 export const app = express()
 app.use(express.json())
 app.use(cors())

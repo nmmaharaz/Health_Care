@@ -1,5 +1,5 @@
 import { envVars } from "../../config/env";
-import type { User } from "../../generated/prisma/client";
+import type { User } from "../../../generated/prisma/client";
 import generateToken from "./generateToken";
 
 const createUserToken = (user: User) => {

@@ -1,7 +1,7 @@
 import http, { Server } from "http"
-import { envVars } from "./config/env.js"
+import { envVars } from "./app/config/env.js"
 import { app } from "./app.js";
-import prisma from "./config/db.js";
+import prisma from "./app/config/db.js";
 let server: Server
 
 async function connectToDB() {

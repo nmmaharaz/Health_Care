@@ -1,0 +1,1 @@
+export const scheduleFields = ["startDateTime", "endDateTime"];

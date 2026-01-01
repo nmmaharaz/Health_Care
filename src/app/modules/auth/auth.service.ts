@@ -1,12 +1,12 @@
 import prisma from "../../config/db"
 import AppError from "../../errorHelper/AppError"
-import { UserStatus } from "../../generated/prisma/enums"
+import { UserStatus } from "../../../generated/prisma/enums"
 import type { ILogin } from "./auth.validation"
 import httpStatus from "http-status-codes"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import createUserToken from "../../utils/jwt/createuserToken"
 import setAuthCookie from "../../utils/jwt/setAuthCookie"
+import createUserToken from "../../utils/jwt/createUserToken"
 
 const Login = async (payload: ILogin) => {
     const userExist = await prisma.user.findFirstOrThrow({

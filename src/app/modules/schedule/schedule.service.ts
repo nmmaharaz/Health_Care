@@ -1,4 +1,6 @@
 import prisma from "../../config/db";
+import { findData } from "../../helpers/findUser";
+import { scheduleFields } from "./schedule.constant";
 import type { ISchedulePayload, ISchedulesData } from "./schedule.interface";
 
 const createSchedule = async (payload: ISchedulePayload) => {
@@ -96,8 +98,43 @@ const createSchedule = async (payload: ISchedulePayload) => {
 // //     totalSlotsCreated: result.count,
 // //   };
 // };
+const getAllSchedule = async(query: Record<string, any>)=>{
+  const {pageNumber, limitNumber, skip, sortBy, sortOder, where} = findData(query, scheduleFields, scheduleFields)
+ 
+    const data = await prisma.user.findMany({
+        where,
+        skip,
+        take: limitNumber,
+        orderBy: sortBy
+            ? {
+                [sortBy]: sortOder === "desc" ? "desc" : "asc",
+            }
+            : {
+                createdAt: "desc",
+            },
+    });
+
+      const total = await prisma.user.count({
+        where
+      });
+
+      return {
+        meta: {
+          page: pageNumber,
+          limit: limitNumber,
+          total,
+        },
+        data,
+      };
+}
+
+
+const filters: Record<string, string> = {}
+
+scheduleFields.map
 
 
 export const ScheduleService = {
-  createSchedule
+  createSchedule,
+  getAllSchedule
 }

@@ -13,7 +13,18 @@ const createSchedule = catchAsync(async(req: Request, res: Response, next: NextF
     });
 })
 
+const getAllSchedule = catchAsync(async(req: Request, res: Response, next: NextFunction)=>{
+    const result = await ScheduleService.getAllSchedule(req.params)
+    sendResponse(res, {
+        statusCode: 201,
+        success: true,
+        message: "Booking created successfully",
+        data: result,
+    });
+})
+
 export const ScheduleController = {
-    createSchedule
+    createSchedule,
+    getAllSchedule
 }
 

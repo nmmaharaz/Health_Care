@@ -21,21 +21,7 @@ export function findData(query: Record<string, any>, filterableFields: string[],
         }
     });
 
-    const where = {
-        AND: {
-            OR: searchableFields.map(field => ({
-                [field]: {
-                    contains: searchTerm,
-                    mode: "insensitive",
-                },
-            })),
-            AND: Object.keys(filters).map(key => (
-                {
-                    [key]: filters[key],
-                })),
-        }
-    }
 
-    return { pageNumber, limitNumber, skip, rest, searchTerm, sortBy, sortOder, filters, where }
+    return { pageNumber, limitNumber, skip, rest, searchTerm, filters, sortBy, sortOder }
 
 }

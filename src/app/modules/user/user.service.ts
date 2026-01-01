@@ -45,8 +45,24 @@ const createPatient = async (payload: {
 
 // }
 export const getAllUser = async (query: Record<string, any>) => {
-    const {pageNumber, limitNumber, skip, sortBy, sortOder, where} = findData(query, userFilterableFields, userSearchableFields)
- 
+    const { pageNumber, limitNumber, skip, searchTerm, filters, sortBy, sortOder, } = findData(query, userFilterableFields, userSearchableFields)
+
+
+    const where = {
+        AND: {
+            OR: userSearchableFields.map(field => ({
+                [field]: {
+                    contains: searchTerm,
+                    mode: "insensitive",
+                },
+            })),
+            AND: Object.keys(filters).map(key => (
+                {
+                    [key]: filters[key],
+                })),
+        }
+    }
+
     const data = await prisma.user.findMany({
         where,
         skip,
@@ -60,18 +76,18 @@ export const getAllUser = async (query: Record<string, any>) => {
             },
     });
 
-      const total = await prisma.user.count({
+    const total = await prisma.user.count({
         where
-      });
+    });
 
-      return {
+    return {
         meta: {
-          page: pageNumber,
-          limit: limitNumber,
-          total,
+            page: pageNumber,
+            limit: limitNumber,
+            total,
         },
         data,
-      };
+    };
 };
 
 

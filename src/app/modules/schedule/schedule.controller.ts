@@ -14,7 +14,7 @@ const createSchedule = catchAsync(async(req: Request, res: Response, next: NextF
 })
 
 const getAllSchedule = catchAsync(async(req: Request, res: Response, next: NextFunction)=>{
-    const result = await ScheduleService.getAllSchedule(req.params)
+    const result = await ScheduleService.getAllSchedule(req.query)
     sendResponse(res, {
         statusCode: 201,
         success: true,

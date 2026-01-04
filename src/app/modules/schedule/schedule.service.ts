@@ -1,3 +1,4 @@
+import type { JwtPayload } from "jsonwebtoken";
 import type { Prisma } from "../../../generated/prisma/client";
 import prisma from "../../config/db";
 import { findData } from "../../helpers/findUser";
@@ -44,62 +45,7 @@ const createSchedule = async (payload: ISchedulePayload) => {
   };
 }
 
-// const createSchedule = async (payload: ISchedulePayload) => {
-//   const { startDate, endDate, startTime, endTime } = payload;
-
-//   const schedulesData: {
-//     startDateTime: Date;
-//     endDateTime: Date;
-//   }[] = [];
-
-//   // date loop
-//   let currentDate = new Date(startDate);
-//   const lastDate = new Date(endDate);
-
-//   while (currentDate <= lastDate) {
-//     console.log("console")
-//     let slotStart = new Date(
-//       `${currentDate.toISOString().split("T")[0]}T${startTime}:00`
-//     );
-
-//     const dayEndTime = new Date(
-//       `${currentDate.toISOString().split("T")[0]}T${endTime}:00`
-//     );
-
-//     // let slotStart = new Date(dayStartTime);
-//     // console.log(dayStartTime, slotStart)
-
-//     // // 30 minute slot loop
-//     while (slotStart < dayEndTime) {
-//       const slotEnd = new Date(slotStart);
-//       console.log(slotEnd)
-//       slotEnd.setMinutes(slotEnd.getMinutes() + 30);
-
-//       if (slotEnd <= dayEndTime) {
-//         schedulesData.push({
-//           startDateTime: new Date(slotStart),
-//           endDateTime: new Date(slotEnd),
-//         });
-//       }
-//       console.log(slotEnd)
-
-//       slotStart = slotEnd;
-//     }
-
-//     // next day
-//     currentDate.setDate(currentDate.getDate() + 1);
-//     console.log("Hellow")
-//   }
-// //   console.log(schedulesData)
-// //   const result = await prisma.schedule.createMany({
-// //     data: schedulesData,
-// //   });
-
-// //   return {
-// //     totalSlotsCreated: result.count,
-// //   };
-// };
-const getAllSchedule = async(query: Record<string, any>)=>{
+const getAllSchedule = async(user: JwtPayload, query: Record<string, any>)=>{
   const {pageNumber, limitNumber, skip, sortBy, sortOder, rest} = findData(query, scheduleFields, scheduleFields)
   const andConditions: Prisma.ScheduleWhereInput[] = [];
 
@@ -128,15 +74,15 @@ const getAllSchedule = async(query: Record<string, any>)=>{
 
     const doctorSchedules = await prisma.doctorSchedules.findMany({
         where: {
-            doctor: {
-                email: "nmmaharaz@gmail.com"
-                // user.email
-            }
+            doctor:{email: user.email} 
+            
         },
         select: {
             scheduleId: true
         }
     });
+
+    console.log
 
     const doctorScheduleIds = doctorSchedules.map(schedule => schedule.scheduleId);
 
@@ -171,8 +117,16 @@ const getAllSchedule = async(query: Record<string, any>)=>{
     };
 }
 
+const deleteSchedule = async(id: string)=>{
+    const result = await prisma.schedule.delete({
+        where: {
+          id 
+        }
+    })
+}
 
 export const ScheduleService = {
   createSchedule,
-  getAllSchedule
+  getAllSchedule,
+  deleteSchedule
 }

@@ -14,7 +14,18 @@ const createSchedule = catchAsync(async(req: Request, res: Response, next: NextF
 })
 
 const getAllSchedule = catchAsync(async(req: Request, res: Response, next: NextFunction)=>{
-    const result = await ScheduleService.getAllSchedule(req.query)
+    const user = req.user
+    const result = await ScheduleService.getAllSchedule(user, req.query)
+    sendResponse(res, {
+        statusCode: 201,
+        success: true,
+        message: "Booking created successfully",
+        data: result,
+    });
+})
+
+const deleteSchedule = catchAsync(async(req: Request, res: Response, next: NextFunction)=>{
+    const result = await ScheduleService.deleteSchedule(req.params.id as string)
     sendResponse(res, {
         statusCode: 201,
         success: true,
@@ -25,6 +36,7 @@ const getAllSchedule = catchAsync(async(req: Request, res: Response, next: NextF
 
 export const ScheduleController = {
     createSchedule,
-    getAllSchedule
+    getAllSchedule,
+    deleteSchedule
 }
 

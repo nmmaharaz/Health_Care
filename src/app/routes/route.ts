@@ -2,6 +2,8 @@ import { Router } from "express";
 import { UserRoute } from "../modules/user/user.route";
 import { AuthRoute } from "../modules/auth/auth.route";
 import { ScheduleRoute } from "../modules/schedule/schedule.route";
+import { DoctorScheduleRoute } from "../modules/doctorSchedule/doctorSchedule.route";
+import { SpecialtiesRoute } from "../modules/specialties/specialties.route";
 
 export const router = Router()
 
@@ -17,7 +19,16 @@ const moduleRoutes = [
     {
         path: "/schedule",
         route: ScheduleRoute
+    },
+    {
+        path: "/doctor-schedule",
+        route: DoctorScheduleRoute
+    },
+    {
+        path: "/specialties",
+        route: SpecialtiesRoute
     }
+    
 ]
 
 moduleRoutes.map((route)=>{

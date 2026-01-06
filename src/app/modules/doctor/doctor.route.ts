@@ -7,9 +7,13 @@ const router = Router()
 
 router.get("/", checkAuth(UserRole.DOCTOR), DoctorController.getAllDoctor)
 
+router.get("/:id", checkAuth(UserRole.ADMIN, UserRole.DOCTOR), DoctorController.getSingleDoctor)
+
 router.post("/suggestion", DoctorController.getAISuggestions);
 
 router.patch("/:id", checkAuth(UserRole.ADMIN, UserRole.DOCTOR), DoctorController.updateDoctorProfile)
+
+router.delete("/:id", checkAuth(UserRole.ADMIN), DoctorController.deleteDoctor)
 
 
 export const DoctorRoute = router

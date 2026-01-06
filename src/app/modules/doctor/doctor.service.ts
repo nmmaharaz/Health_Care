@@ -62,6 +62,24 @@ const getAllDoctor = async (query: Record<string, any>) => {
     };
 }
 
+const getSingleDoctor = async (id: string) => {
+
+    const data = await prisma.doctor.findMany({
+        where: {
+            id
+        },
+        include: {
+            doctorSpecialties: {
+                include: {
+                    specialities: true
+                }
+            }
+        },
+    });
+
+    return  data
+}
+
 const updateDoctorProfile = async (id: string, payload: Partial<IDoctorUpdateInput>) => {
     await prisma.doctor.findUniqueOrThrow({
         where: {
@@ -110,11 +128,11 @@ const updateDoctorProfile = async (id: string, payload: Partial<IDoctorUpdateInp
     })
 }
 
-const getAISuggestions = async(payload:  string)=>{
-     if (!(payload)) {
+const getAISuggestions = async (payload: string) => {
+    if (!(payload)) {
         throw new AppError(httpStatus.BAD_REQUEST, "symptoms is required!")
     };
-        const doctors = await prisma.doctor.findMany({
+    const doctors = await prisma.doctor.findMany({
         where: { isDeleted: false },
         include: {
             doctorSpecialties: {
@@ -128,8 +146,28 @@ const getAISuggestions = async(payload:  string)=>{
     return await suggestDoctor(doctors, payload)
 }
 
+const deleteDoctor = async (id: string) => {
+       return await prisma.$transaction(async (transactionClient) => {
+        const deleteDoctor = await transactionClient.doctor.delete({
+            where: {
+                id,
+            },
+        });
+
+        await transactionClient.user.delete({
+            where: {
+                email: deleteDoctor.email,
+            },
+        });
+
+        return deleteDoctor;
+    });
+}
+
 export const DoctorService = {
     getAllDoctor,
+    getSingleDoctor,
     getAISuggestions,
-    updateDoctorProfile
+    updateDoctorProfile,
+    deleteDoctor
 }

@@ -13,6 +13,16 @@ const getAllDoctor = catchAsync(async (req: Request, res: Response, next: NextFu
     });
 })
 
+const getSingleDoctor = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await DoctorService.getSingleDoctor(req.params.id as string)
+    sendResponse(res, {
+        statusCode: 201,
+        success: true,
+        message: "Booking created successfully",
+        data: result,
+    });
+})
+
 const getAISuggestions = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const result = await DoctorService.getAISuggestions(req.body.symptoms as string)
     sendResponse(res, {
@@ -33,9 +43,21 @@ const updateDoctorProfile = catchAsync(async (req: Request, res: Response, next:
     });
 })
 
+const deleteDoctor = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await DoctorService.deleteDoctor(req.params.id as string)
+    sendResponse(res, {
+        statusCode: 201,
+        success: true,
+        message: "Booking created successfully",
+        data: result,
+    });
+})
+
 
 export const DoctorController = {
     getAllDoctor,
+    getSingleDoctor,
     getAISuggestions,
-    updateDoctorProfile
+    updateDoctorProfile,
+    deleteDoctor
 }

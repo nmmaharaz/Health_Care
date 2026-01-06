@@ -46,7 +46,8 @@ const getAllDoctor = async (query: Record<string, any>) => {
                 include: {
                     specialities: true
                 }
-            }
+            },
+            doctorSchedules: true
         },
     });
 
@@ -73,7 +74,8 @@ const getSingleDoctor = async (id: string) => {
                 include: {
                     specialities: true
                 }
-            }
+            },
+            doctorSchedules:true
         },
     });
 

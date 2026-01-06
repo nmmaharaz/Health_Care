@@ -15,5 +15,7 @@ export const envVars = {
         jwt_access_expires: process.env.JWT_ACCESS_EXPIRES as string,
         jwt_refresh_secret: process.env.JWT_REFRESH_SECRET as string,
         jwt_refresh_expires: process.env.JWT_ACCESS_EXPIRES as string,
-    }
+    },
+    stripe_api_secret:process.env.STRIPE_SECRET_KEY as string,
+    client_side_url:process.env.CLIENT_URL
 }

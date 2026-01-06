@@ -5,9 +5,9 @@ import { DoctorController } from "./doctor.controller";
 
 const router = Router()
 
-router.get("/", checkAuth(UserRole.DOCTOR), DoctorController.getAllDoctor)
+router.get("/", DoctorController.getAllDoctor)
 
-router.get("/:id", checkAuth(UserRole.ADMIN, UserRole.DOCTOR), DoctorController.getSingleDoctor)
+router.get("/:id", DoctorController.getSingleDoctor)
 
 router.post("/suggestion", DoctorController.getAISuggestions);
 

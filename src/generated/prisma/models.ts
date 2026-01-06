@@ -8,6 +8,9 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/Appointment.js'
+export type * from './models/Payment.js'
+export type * from './models/Prescription.js'
 export type * from './models/Schedule.js'
 export type * from './models/DoctorSchedules.js'
 export type * from './models/Specialties.js'

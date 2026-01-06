@@ -17,17 +17,6 @@ const getAllDoctor = async (query: Record<string, any>) => {
     const { specialties, ...filterData } = filters;
     const andConditions: Prisma.DoctorWhereInput[] = [];
 
-    // if (searchTerm) {
-    //     andConditions.push({
-    //         OR: doctorSearchableFields.map(field => ({
-    //             [field]: {
-    //                 contains: searchTerm,
-    //                 mode: "insensitive",
-    //             },
-    //         })),
-    //     });
-    // }
-
     if (specialties && specialties.length > 0) {
         andConditions.push({
             doctorSpecialties: {
@@ -42,15 +31,6 @@ const getAllDoctor = async (query: Record<string, any>) => {
             }
         });
     }
-
-
-    // if (Object.keys(filterData).length > 0) {
-    //     andConditions.push({
-    //         AND: Object.keys(filterData).map(key => ({
-    //             [key]: filterData[key],
-    //         })),
-    //     });
-    // }
 
     const where: Prisma.DoctorWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 

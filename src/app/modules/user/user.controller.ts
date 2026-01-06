@@ -39,8 +39,6 @@ const createAdmin = catchAsync(async(req: Request, res: Response, next: NextFunc
 })
 
 const getAllUser = catchAsync(async(req: Request & {user?: JwtPayload}, res: Response, next: NextFunction)=>{
-    const user = req.user
-    console.log("Logged in user:", user);
     const result = await UserService.getAllUser(req.query)
     sendResponse(res, {                                              
         statusCode: 201,

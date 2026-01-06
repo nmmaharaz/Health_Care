@@ -2,12 +2,9 @@ import type { Specialties } from "../../../generated/prisma/client"
 import prisma from "../../config/db"
 
 const createSpecialties = async (payload: Specialties) => {
-    console.log(payload)
-    const result = await prisma.specialties.create({
+    return await prisma.specialties.create({
         data: payload
     })
-
-    console.log(result)
 }
 
 const getAllSpecialties = async () => {

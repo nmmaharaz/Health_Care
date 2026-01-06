@@ -46,7 +46,7 @@ const createSchedule = async (payload: ISchedulePayload) => {
 }
 
 const getAllSchedule = async(user: JwtPayload, query: Record<string, any>)=>{
-  const {pageNumber, limitNumber, skip, sortBy, sortOder, rest} = findData(query, scheduleFields, scheduleFields)
+  const {pageNumber, limitNumber, skip, sortBy, sortOrder, rest} = findData(query, scheduleFields, scheduleFields)
   const andConditions: Prisma.ScheduleWhereInput[] = [];
 
     if (rest.startDateTime && rest.endDateTime) {
@@ -96,7 +96,7 @@ const getAllSchedule = async(user: JwtPayload, query: Record<string, any>)=>{
         skip,
         take: limitNumber,
         orderBy: {
-            [sortBy]: sortOder
+            [sortBy]: sortOrder
         }
     });
 

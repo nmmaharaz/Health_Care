@@ -9,6 +9,7 @@ export const envVars = {
     cloud_name: process.env.CLOUD_NAME as string,
     api_key: process.env.API_KEY as string,
     api_secret: process.env.API_SECRET as string,
+    gemini_api:process.env.GEMINI_API_KEY as string,
     jwt: {
         jwt_access_secret: process.env.JWT_ACCESS_SECRET as string,
         jwt_access_expires: process.env.JWT_ACCESS_EXPIRES as string,

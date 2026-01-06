@@ -3,7 +3,7 @@ export function findData(query: Record<string, any>, filterableFields: string[],
         page,
         limit,
         sortBy,
-        sortOder,
+        sortOrder,
         searchTerm,
         ...rest
     } = query;
@@ -22,6 +22,6 @@ export function findData(query: Record<string, any>, filterableFields: string[],
     });
 
 
-    return { pageNumber, limitNumber, skip, rest, searchTerm, filters, sortBy, sortOder }
+    return { pageNumber, limitNumber, skip, rest, searchTerm, filters, sortBy, sortOrder }
 
 }

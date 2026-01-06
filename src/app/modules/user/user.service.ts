@@ -73,7 +73,7 @@ const createAdmin = async (payload: {
 
 }
 // const getAllUser = async(query: Record<string, any>)=>{
-//     const {page: pageNumber, limit: totalLimit, sortBy, sortOder, filter: filterData, searchTerm: search} = query
+//     const {page: pageNumber, limit: totalLimit, sortBy, sortOrder, filter: filterData, searchTerm: search} = query
 //     const page = pageNumber || 1
 //     const limit = totalLimit || 10
 //     const searchTerm = search || ""
@@ -90,7 +90,7 @@ const createAdmin = async (payload: {
 
 // }
 export const getAllUser = async (query: Record<string, any>) => {
-    const { pageNumber, limitNumber, skip, searchTerm, filters, sortBy, sortOder, } = findData(query, userFilterableFields, userSearchableFields)
+    const { pageNumber, limitNumber, skip, searchTerm, filters, sortBy, sortOrder, } = findData(query, userFilterableFields, userSearchableFields)
 
     const where = {
         AND: {
@@ -110,10 +110,13 @@ export const getAllUser = async (query: Record<string, any>) => {
     const data = await prisma.user.findMany({
         where,
         skip,
+        include:{
+            doctor: true
+        },
         take: limitNumber,
         orderBy: sortBy
             ? {
-                [sortBy]: sortOder === "desc" ? "desc" : "asc",
+                [sortBy]: sortOrder === "desc" ? "desc" : "asc",
             }
             : {
                 createdAt: "desc",

@@ -53,11 +53,22 @@ const deleteDoctor = catchAsync(async (req: Request, res: Response, next: NextFu
     });
 })
 
+const softDeleteDoctor = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await DoctorService.softDeleteDoctor(req.params.id as string)
+    sendResponse(res, {
+        statusCode: 201,
+        success: true,
+        message: "Booking created successfully",
+        data: result,
+    });
+})
+
 
 export const DoctorController = {
     getAllDoctor,
     getSingleDoctor,
     getAISuggestions,
     updateDoctorProfile,
-    deleteDoctor
+    deleteDoctor,
+    softDeleteDoctor
 }

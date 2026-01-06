@@ -15,5 +15,7 @@ router.patch("/:id", checkAuth(UserRole.ADMIN, UserRole.DOCTOR), DoctorControlle
 
 router.delete("/:id", checkAuth(UserRole.ADMIN), DoctorController.deleteDoctor)
 
+router.delete("/soft/:id", checkAuth(UserRole.ADMIN), DoctorController.softDeleteDoctor)
+
 
 export const DoctorRoute = router

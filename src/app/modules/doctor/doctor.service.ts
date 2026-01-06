@@ -1,4 +1,4 @@
-import type { Prisma } from "../../../generated/prisma/client";
+import { UserStatus, type Prisma } from "../../../generated/prisma/client";
 import { suggestDoctor } from "../../config/ai.config";
 import prisma from "../../config/db";
 import AppError from "../../errorHelper/AppError";
@@ -164,10 +164,35 @@ const deleteDoctor = async (id: string) => {
     });
 }
 
+const softDeleteDoctor = async (id: string) => {
+       return await prisma.$transaction(async (transactionClient) => {
+        const deleteDoctor = await transactionClient.doctor.update({
+            where: {
+                id,
+            },
+            data:{
+                isDeleted: true
+            }
+        });
+
+        await transactionClient.user.update({
+            where: {
+                email: deleteDoctor.email
+            },
+            data:{
+                status: UserStatus.DELETED
+            }
+        });
+
+        return deleteDoctor;
+    });
+}
+
 export const DoctorService = {
     getAllDoctor,
     getSingleDoctor,
     getAISuggestions,
     updateDoctorProfile,
-    deleteDoctor
+    deleteDoctor,
+    softDeleteDoctor
 }

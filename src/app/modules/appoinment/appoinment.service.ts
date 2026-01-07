@@ -22,7 +22,8 @@ const createAppoinment = async (user: JwtPayload, payload: { doctorId: string, s
             doctorId_scheduleId: {
                 doctorId: doctorData.id,
                 scheduleId: payload.scheduleId
-            }
+            },
+            isBooked: false
         }
     })
 
@@ -61,7 +62,7 @@ const createAppoinment = async (user: JwtPayload, payload: { doctorId: string, s
             }
         })
 
-           const session = await stripe.checkout.sessions.create({
+        const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "payment",
             customer_email: user.email,
@@ -81,11 +82,11 @@ const createAppoinment = async (user: JwtPayload, payload: { doctorId: string, s
                 appointmentId: appoinmentData.id,
                 paymentId: paymentData.id
             },
-            success_url: `${envVars.client_side_url}/success`,
-            cancel_url: `${envVars.client_side_url}/home`,
+            success_url: `https://www.programming-hero.com/`,
+            cancel_url: `https://next.programming-hero.com/`,
         });
-        // return { paymentUrl: session.url };
-        console.log(session, "session")
+
+        return { paymentUrl: session.url };
     })
 
     return result

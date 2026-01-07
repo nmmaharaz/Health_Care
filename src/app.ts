@@ -4,8 +4,14 @@ import { globalError } from "./app/middleware/globalErrorHandlers.js"
 import { envVars } from "./app/config/env.js"
 import { router } from "./app/routes/route.js"
 import cookieParser from "cookie-parser"
+import { PaymentController } from "./app/modules/payment/payment.controller.js"
 
 export const app = express()
+app.post(
+    "/webhook",
+    express.raw({ type: "application/json" }),
+    PaymentController.handleStripeWebhookEvent
+);
 app.use(express.json())
 app.use(cors())
 app.use(cookieParser())

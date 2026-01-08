@@ -1,39 +1,34 @@
-import type { JwtPayload } from "jsonwebtoken";
-import prisma from "../../config/db";
-import { v4 as uuid } from "uuid";
-import stripe from "../../config/stripe.config";
-import { envVars } from "../../config/env";
+import { v4 as uuidv4 } from 'uuid';
+import { stripe } from '../../config/stripe.config';
+import prisma from '../../config/db';
+import type { JwtPayload } from 'jsonwebtoken';
 
-const createAppoinment = async (user: JwtPayload, payload: { doctorId: string, scheduleId: string }) => {
+const createAppointment = async (user: JwtPayload, payload: { doctorId: string, scheduleId: string }) => {
     const patientData = await prisma.patient.findUniqueOrThrow({
         where: {
             email: user.email
         }
-    })
+    });
 
     const doctorData = await prisma.doctor.findUniqueOrThrow({
         where: {
-            id: payload.doctorId
+            id: payload.doctorId,
+            isDeleted: false
         }
-    })
+    });
 
-    const isBookOrNot = await prisma.doctorSchedules.findUniqueOrThrow({
+    const isBookedOrNot = await prisma.doctorSchedules.findFirstOrThrow({
         where: {
-            doctorId_scheduleId: {
-                doctorId: doctorData.id,
-                scheduleId: payload.scheduleId
-            },
+            doctorId: payload.doctorId,
+            scheduleId: payload.scheduleId,
             isBooked: false
         }
     })
 
-    console.log(isBookOrNot, "isBook")
-
-    const videoCallingId = uuid()
-    const transactionId = uuid()
+    const videoCallingId = uuidv4();
 
     const result = await prisma.$transaction(async (tnx) => {
-        const appoinmentData = await tnx.appointment.create({
+        const appointmentData = await tnx.appointment.create({
             data: {
                 patientId: patientData.id,
                 doctorId: doctorData.id,
@@ -54,9 +49,11 @@ const createAppoinment = async (user: JwtPayload, payload: { doctorId: string, s
             }
         })
 
+        const transactionId = uuidv4();
+
         const paymentData = await tnx.payment.create({
             data: {
-                appointmentId: appoinmentData.id,
+                appointmentId: appointmentData.id,
                 amount: doctorData.appointmentFee,
                 transactionId
             }
@@ -79,7 +76,7 @@ const createAppoinment = async (user: JwtPayload, payload: { doctorId: string, s
                 },
             ],
             metadata: {
-                appointmentId: appoinmentData.id,
+                appointmentId: appointmentData.id,
                 paymentId: paymentData.id
             },
             success_url: `https://www.programming-hero.com/`,
@@ -89,10 +86,101 @@ const createAppoinment = async (user: JwtPayload, payload: { doctorId: string, s
         return { paymentUrl: session.url };
     })
 
-    return result
 
-}
+    return result;
+};
 
-export const AppoinmentService = {
-    createAppoinment
-}
+
+// const getMyAppointment = async (user: IJWTPayload, filters: any, options: IOptions) => {
+//     const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
+//     const { ...filterData } = filters;
+
+//     const andConditions: Prisma.AppointmentWhereInput[] = [];
+
+//     if (user.role === UserRole.PATIENT) {
+//         andConditions.push({
+//             patient: {
+//                 email: user.email
+//             }
+//         })
+//     }
+//     else if (user.role === UserRole.DOCTOR) {
+//         andConditions.push({
+//             doctor: {
+//                 email: user.email
+//             }
+//         })
+//     }
+
+//     if (Object.keys(filterData).length > 0) {
+//         const filterConditions = Object.keys(filterData).map(key => ({
+//             [key]: {
+//                 equals: (filterData as any)[key]
+//             }
+//         }))
+
+//         andConditions.push(...filterConditions)
+//     }
+
+//     const whereConditions: Prisma.AppointmentWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+
+//     const result = await prisma.appointment.findMany({
+//         where: whereConditions,
+//         skip,
+//         take: limit,
+//         orderBy: {
+//             [sortBy]: sortOrder
+//         },
+//         include: user.role === UserRole.DOCTOR ?
+//             { patient: true } : { doctor: true }
+//     });
+
+//     const total = await prisma.appointment.count({
+//         where: whereConditions
+//     });
+
+//     return {
+//         meta: {
+//             total,
+//             limit,
+//             page
+//         },
+//         data: result
+//     }
+
+// }
+
+// task get all data from db (appointment data) - admin
+
+
+// const updateAppointmentStatus = async (appointmentId: string, status: AppointmentStatus, user: IJWTPayload) => {
+//     const appointmentData = await prisma.appointment.findUniqueOrThrow({
+//         where: {
+//             id: appointmentId
+//         },
+//         include: {
+//             doctor: true
+//         }
+//     });
+
+//     if (user.role === UserRole.DOCTOR) {
+//         if (!(user.email === appointmentData.doctor.email))
+//             throw new ApiError(httpStatus.BAD_REQUEST, "This is not your appointment")
+//     }
+
+//     return await prisma.appointment.update({
+//         where: {
+//             id: appointmentId
+//         },
+//         data: {
+//             status
+//         }
+//     })
+
+// }
+
+export const AppointmentService = {
+    createAppointment,
+    // getMyAppointment,
+    // updateAppointmentStatus
+};

@@ -1,6 +1,3 @@
 import Stripe from "stripe";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
-
-
-export default stripe;
+import { envVars } from "./env";
+export const stripe = new Stripe(envVars.stripe_api_secret as string);

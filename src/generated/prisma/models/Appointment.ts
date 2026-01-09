@@ -295,9 +295,9 @@ export type AppointmentCreateInput = {
   paymentStatus?: $Enums.PaymentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  patient: Prisma.PatientCreateNestedOneWithoutAppoinmentsInput
-  doctor: Prisma.DoctorCreateNestedOneWithoutAppoinmentsInput
-  schedule: Prisma.ScheduleCreateNestedOneWithoutAppoinmentsInput
+  patient: Prisma.PatientCreateNestedOneWithoutAppointmentsInput
+  doctor: Prisma.DoctorCreateNestedOneWithoutAppointmentsInput
+  schedule: Prisma.ScheduleCreateNestedOneWithoutAppointmentsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutAppointmentInput
   prescription?: Prisma.PrescriptionCreateNestedOneWithoutAppointmentInput
 }
@@ -323,9 +323,9 @@ export type AppointmentUpdateInput = {
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  patient?: Prisma.PatientUpdateOneRequiredWithoutAppoinmentsNestedInput
-  doctor?: Prisma.DoctorUpdateOneRequiredWithoutAppoinmentsNestedInput
-  schedule?: Prisma.ScheduleUpdateOneRequiredWithoutAppoinmentsNestedInput
+  patient?: Prisma.PatientUpdateOneRequiredWithoutAppointmentsNestedInput
+  doctor?: Prisma.DoctorUpdateOneRequiredWithoutAppointmentsNestedInput
+  schedule?: Prisma.ScheduleUpdateOneRequiredWithoutAppointmentsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutAppointmentNestedInput
   prescription?: Prisma.PrescriptionUpdateOneWithoutAppointmentNestedInput
 }
@@ -605,9 +605,9 @@ export type AppointmentCreateWithoutPaymentInput = {
   paymentStatus?: $Enums.PaymentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  patient: Prisma.PatientCreateNestedOneWithoutAppoinmentsInput
-  doctor: Prisma.DoctorCreateNestedOneWithoutAppoinmentsInput
-  schedule: Prisma.ScheduleCreateNestedOneWithoutAppoinmentsInput
+  patient: Prisma.PatientCreateNestedOneWithoutAppointmentsInput
+  doctor: Prisma.DoctorCreateNestedOneWithoutAppointmentsInput
+  schedule: Prisma.ScheduleCreateNestedOneWithoutAppointmentsInput
   prescription?: Prisma.PrescriptionCreateNestedOneWithoutAppointmentInput
 }
 
@@ -647,9 +647,9 @@ export type AppointmentUpdateWithoutPaymentInput = {
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  patient?: Prisma.PatientUpdateOneRequiredWithoutAppoinmentsNestedInput
-  doctor?: Prisma.DoctorUpdateOneRequiredWithoutAppoinmentsNestedInput
-  schedule?: Prisma.ScheduleUpdateOneRequiredWithoutAppoinmentsNestedInput
+  patient?: Prisma.PatientUpdateOneRequiredWithoutAppointmentsNestedInput
+  doctor?: Prisma.DoctorUpdateOneRequiredWithoutAppointmentsNestedInput
+  schedule?: Prisma.ScheduleUpdateOneRequiredWithoutAppointmentsNestedInput
   prescription?: Prisma.PrescriptionUpdateOneWithoutAppointmentNestedInput
 }
 
@@ -673,9 +673,9 @@ export type AppointmentCreateWithoutPrescriptionInput = {
   paymentStatus?: $Enums.PaymentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  patient: Prisma.PatientCreateNestedOneWithoutAppoinmentsInput
-  doctor: Prisma.DoctorCreateNestedOneWithoutAppoinmentsInput
-  schedule: Prisma.ScheduleCreateNestedOneWithoutAppoinmentsInput
+  patient: Prisma.PatientCreateNestedOneWithoutAppointmentsInput
+  doctor: Prisma.DoctorCreateNestedOneWithoutAppointmentsInput
+  schedule: Prisma.ScheduleCreateNestedOneWithoutAppointmentsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutAppointmentInput
 }
 
@@ -715,9 +715,9 @@ export type AppointmentUpdateWithoutPrescriptionInput = {
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  patient?: Prisma.PatientUpdateOneRequiredWithoutAppoinmentsNestedInput
-  doctor?: Prisma.DoctorUpdateOneRequiredWithoutAppoinmentsNestedInput
-  schedule?: Prisma.ScheduleUpdateOneRequiredWithoutAppoinmentsNestedInput
+  patient?: Prisma.PatientUpdateOneRequiredWithoutAppointmentsNestedInput
+  doctor?: Prisma.DoctorUpdateOneRequiredWithoutAppointmentsNestedInput
+  schedule?: Prisma.ScheduleUpdateOneRequiredWithoutAppointmentsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutAppointmentNestedInput
 }
 
@@ -741,8 +741,8 @@ export type AppointmentCreateWithoutScheduleInput = {
   paymentStatus?: $Enums.PaymentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  patient: Prisma.PatientCreateNestedOneWithoutAppoinmentsInput
-  doctor: Prisma.DoctorCreateNestedOneWithoutAppoinmentsInput
+  patient: Prisma.PatientCreateNestedOneWithoutAppointmentsInput
+  doctor: Prisma.DoctorCreateNestedOneWithoutAppointmentsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutAppointmentInput
   prescription?: Prisma.PrescriptionCreateNestedOneWithoutAppointmentInput
 }
@@ -808,8 +808,8 @@ export type AppointmentCreateWithoutDoctorInput = {
   paymentStatus?: $Enums.PaymentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  patient: Prisma.PatientCreateNestedOneWithoutAppoinmentsInput
-  schedule: Prisma.ScheduleCreateNestedOneWithoutAppoinmentsInput
+  patient: Prisma.PatientCreateNestedOneWithoutAppointmentsInput
+  schedule: Prisma.ScheduleCreateNestedOneWithoutAppointmentsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutAppointmentInput
   prescription?: Prisma.PrescriptionCreateNestedOneWithoutAppointmentInput
 }
@@ -860,8 +860,8 @@ export type AppointmentCreateWithoutPatientInput = {
   paymentStatus?: $Enums.PaymentStatus
   createdAt?: Date | string
   updatedAt?: Date | string
-  doctor: Prisma.DoctorCreateNestedOneWithoutAppoinmentsInput
-  schedule: Prisma.ScheduleCreateNestedOneWithoutAppoinmentsInput
+  doctor: Prisma.DoctorCreateNestedOneWithoutAppointmentsInput
+  schedule: Prisma.ScheduleCreateNestedOneWithoutAppointmentsInput
   payment?: Prisma.PaymentCreateNestedOneWithoutAppointmentInput
   prescription?: Prisma.PrescriptionCreateNestedOneWithoutAppointmentInput
 }
@@ -923,8 +923,8 @@ export type AppointmentUpdateWithoutScheduleInput = {
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  patient?: Prisma.PatientUpdateOneRequiredWithoutAppoinmentsNestedInput
-  doctor?: Prisma.DoctorUpdateOneRequiredWithoutAppoinmentsNestedInput
+  patient?: Prisma.PatientUpdateOneRequiredWithoutAppointmentsNestedInput
+  doctor?: Prisma.DoctorUpdateOneRequiredWithoutAppointmentsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutAppointmentNestedInput
   prescription?: Prisma.PrescriptionUpdateOneWithoutAppointmentNestedInput
 }
@@ -971,8 +971,8 @@ export type AppointmentUpdateWithoutDoctorInput = {
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  patient?: Prisma.PatientUpdateOneRequiredWithoutAppoinmentsNestedInput
-  schedule?: Prisma.ScheduleUpdateOneRequiredWithoutAppoinmentsNestedInput
+  patient?: Prisma.PatientUpdateOneRequiredWithoutAppointmentsNestedInput
+  schedule?: Prisma.ScheduleUpdateOneRequiredWithoutAppointmentsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutAppointmentNestedInput
   prescription?: Prisma.PrescriptionUpdateOneWithoutAppointmentNestedInput
 }
@@ -1019,8 +1019,8 @@ export type AppointmentUpdateWithoutPatientInput = {
   paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  doctor?: Prisma.DoctorUpdateOneRequiredWithoutAppoinmentsNestedInput
-  schedule?: Prisma.ScheduleUpdateOneRequiredWithoutAppoinmentsNestedInput
+  doctor?: Prisma.DoctorUpdateOneRequiredWithoutAppointmentsNestedInput
+  schedule?: Prisma.ScheduleUpdateOneRequiredWithoutAppointmentsNestedInput
   payment?: Prisma.PaymentUpdateOneWithoutAppointmentNestedInput
   prescription?: Prisma.PrescriptionUpdateOneWithoutAppointmentNestedInput
 }

@@ -2,6 +2,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { stripe } from '../../config/stripe.config';
 import prisma from '../../config/db';
 import type { JwtPayload } from 'jsonwebtoken';
+import { findData } from '../../helpers/findUser';
+import { AppointmentStatus, UserRole, type Prisma } from '../../../generated/prisma/client';
+import AppError from '../../errorHelper/AppError';
+import httpStatus from "http-status-codes"
 
 const createAppointment = async (user: JwtPayload, payload: { doctorId: string, scheduleId: string }) => {
     const patientData = await prisma.patient.findUniqueOrThrow({
@@ -91,96 +95,93 @@ const createAppointment = async (user: JwtPayload, payload: { doctorId: string, 
 };
 
 
-// const getMyAppointment = async (user: IJWTPayload, filters: any, options: IOptions) => {
-//     const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
-//     const { ...filterData } = filters;
+const getMyAppointment = async (user: JwtPayload, query: Record<string, any>) => {
+    const { pageNumber, limitNumber, skip, filters, sortBy, sortOrder, } = findData(query, ["status", "paymentStatus"])
 
-//     const andConditions: Prisma.AppointmentWhereInput[] = [];
+    const andConditions: Prisma.AppointmentWhereInput[] = [];
 
-//     if (user.role === UserRole.PATIENT) {
-//         andConditions.push({
-//             patient: {
-//                 email: user.email
-//             }
-//         })
-//     }
-//     else if (user.role === UserRole.DOCTOR) {
-//         andConditions.push({
-//             doctor: {
-//                 email: user.email
-//             }
-//         })
-//     }
+    if (user.role === UserRole.PATIENT) {
+        andConditions.push({
+            patient: {
+                email: user.email
+            }
+        })
+    }
+    else if (user.role === UserRole.DOCTOR) {
+        andConditions.push({
+            doctor: {
+                email: user.email
+            }
+        })
+    }
 
-//     if (Object.keys(filterData).length > 0) {
-//         const filterConditions = Object.keys(filterData).map(key => ({
-//             [key]: {
-//                 equals: (filterData as any)[key]
-//             }
-//         }))
+    if (Object.keys(filters).length > 0) {
+        const filterConditions = Object.keys(filters).map(key => ({
+            [key]: {
+                equals: (filters as any)[key]
+            }
+        }))
+        console.log(...filterConditions, "filterConditions")
+        andConditions.push(...filterConditions)
+    }
+    const whereConditions: Prisma.AppointmentWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+    console.log(whereConditions, "Hellow")
 
-//         andConditions.push(...filterConditions)
-//     }
+    const result = await prisma.appointment.findMany({
+        where: whereConditions,
+        skip,
+        take: limitNumber,
+        orderBy: {
+            [sortBy]: sortOrder
+        },
+        include: user.role === UserRole.DOCTOR ?
+            { patient: true } : { doctor: true }
+    });
 
-//     const whereConditions: Prisma.AppointmentWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+    const total = await prisma.appointment.count({
+        where: whereConditions
+    });
 
-//     const result = await prisma.appointment.findMany({
-//         where: whereConditions,
-//         skip,
-//         take: limit,
-//         orderBy: {
-//             [sortBy]: sortOrder
-//         },
-//         include: user.role === UserRole.DOCTOR ?
-//             { patient: true } : { doctor: true }
-//     });
-
-//     const total = await prisma.appointment.count({
-//         where: whereConditions
-//     });
-
-//     return {
-//         meta: {
-//             total,
-//             limit,
-//             page
-//         },
-//         data: result
-//     }
-
-// }
+    return {
+        meta: {
+            page: pageNumber,
+            limit: limitNumber,
+            total,
+        },
+        data: result
+    }
+}
 
 // task get all data from db (appointment data) - admin
 
+const updateAppointmentStatus = async (appointmentId: string, status: AppointmentStatus, user: JwtPayload) => {
+    const appointmentData = await prisma.appointment.findUniqueOrThrow({
+        where: {
+            id: appointmentId
+        },
+        include: {
+            doctor: true
+        }
+    });
 
-// const updateAppointmentStatus = async (appointmentId: string, status: AppointmentStatus, user: IJWTPayload) => {
-//     const appointmentData = await prisma.appointment.findUniqueOrThrow({
-//         where: {
-//             id: appointmentId
-//         },
-//         include: {
-//             doctor: true
-//         }
-//     });
+    if (user.role === UserRole.DOCTOR) {
+        if (!(user.email === appointmentData.doctor.email))
+            throw new AppError(httpStatus.BAD_REQUEST, "This is not your appointment")
+    }
 
-//     if (user.role === UserRole.DOCTOR) {
-//         if (!(user.email === appointmentData.doctor.email))
-//             throw new ApiError(httpStatus.BAD_REQUEST, "This is not your appointment")
-//     }
+    return await prisma.appointment.update({
+        where: {
+            id: appointmentId
+        },
+        data: {
+            status
+        }
+    })
 
-//     return await prisma.appointment.update({
-//         where: {
-//             id: appointmentId
-//         },
-//         data: {
-//             status
-//         }
-//     })
-
-// }
+}
 
 export const AppointmentService = {
     createAppointment,
-    // getMyAppointment,
-    // updateAppointmentStatus
+    getMyAppointment,
+    updateAppointmentStatus
 };

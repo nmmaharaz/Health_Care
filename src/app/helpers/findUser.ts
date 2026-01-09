@@ -1,4 +1,4 @@
-export function findData(query: Record<string, any>, filterableFields: string[], searchableFields: string[]) {
+export function findData(query: Record<string, any>, filterableFields: string[]) {
     const {
         page,
         limit,

@@ -90,7 +90,7 @@ const createAdmin = async (payload: {
 
 // }
 export const getAllUser = async (query: Record<string, any>) => {
-    const { pageNumber, limitNumber, skip, searchTerm, filters, sortBy, sortOrder, } = findData(query, userFilterableFields, userSearchableFields)
+    const { pageNumber, limitNumber, skip, searchTerm, filters, sortBy, sortOrder } = findData(query, userFilterableFields)
 
     const where = {
         AND: {

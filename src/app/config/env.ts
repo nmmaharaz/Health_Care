@@ -2,9 +2,9 @@ import dotenv from "dotenv"
 dotenv.config()
 
 export const envVars = {
-    port: process.env.PORT,
-    node_env: process.env.NODE_ENV,
-    base_url: process.env.DATABASE_URL,
+port: process.env.PORT,
+    node_env: process.env.NODE_ENV as string,
+    base_url: process.env.DATABASE_URL as string,
     sald_round: process.env.BCRYPT_SALT_ROUND,
     cloud_name: process.env.CLOUD_NAME as string,
     api_key: process.env.API_KEY as string,

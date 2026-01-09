@@ -47,7 +47,7 @@ async function gracefulShutdown(signal: string) {
         process.exit(0);
     }
 }
-
+main()
 
 function handleProcessEvents() {
     process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
@@ -64,4 +64,3 @@ function handleProcessEvents() {
     });
 }
 
-main()

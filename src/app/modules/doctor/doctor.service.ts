@@ -10,8 +10,7 @@ import httpStatus from "http-status-codes"
 const getAllDoctor = async (query: Record<string, any>) => {
     const { pageNumber, limitNumber, skip, searchTerm, filters, sortBy, sortOrder } = findData(
         query,
-        doctorFilterableFields,
-        doctorSearchableFields
+        doctorFilterableFields
     );
 
     const { specialties, ...filterData } = filters;

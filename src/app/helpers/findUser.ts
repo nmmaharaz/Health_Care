@@ -8,8 +8,6 @@ export function findData(query: Record<string, any>, filterableFields: string[])
         ...rest
     } = query;
 
-    // pagination
-    console.log("Hellow Data")
     const pageNumber = Number(page) || 1;
     const limitNumber = Number(limit) || 10;
     const skip = (pageNumber - 1) * limitNumber;

@@ -8,7 +8,7 @@ const createReview = catchAsync(async(req: Request, res: Response, next: NextFun
     sendResponse(res, {                                              
         statusCode: 201,
         success: true,
-        message: "Booking created successfully",
+        message: "Review created successfully",
         data: result,
     });
 })

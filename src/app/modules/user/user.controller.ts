@@ -43,7 +43,7 @@ const getAllUser = catchAsync(async(req: Request & {user?: JwtPayload}, res: Res
     sendResponse(res, {                                              
         statusCode: 201,
         success: true,
-        message: "Booking created successfully",
+        message: "My profile data fetched",
         data: result,
     });
 })

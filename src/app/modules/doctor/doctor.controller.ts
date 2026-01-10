@@ -28,7 +28,7 @@ const getAISuggestions = catchAsync(async (req: Request, res: Response, next: Ne
     sendResponse(res, {
         statusCode: 201,
         success: true,
-        message: "Booking created successfully",
+        message: "AI suggestions fetched successfully",
         data: result,
     });
 })

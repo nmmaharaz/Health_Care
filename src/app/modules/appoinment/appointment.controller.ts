@@ -10,7 +10,7 @@ const createAppointment = catchAsync(async (req: Request, res: Response, next: N
     sendResponse(res, {
         statusCode: 201,
         success: true,
-        message: "Booking created successfully",
+        message: "Appointment created successfully",
         data: result,
     });
 })

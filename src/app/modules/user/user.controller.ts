@@ -2,7 +2,6 @@ import type { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse.js";
 import { UserService } from "./user.service.js";
-import { cloudinaryUpload } from "../../config/cloudinary.config";
 import type { JwtPayload } from "jsonwebtoken";
 
 const createPatient = catchAsync(async(req: Request, res: Response, next: NextFunction)=>{

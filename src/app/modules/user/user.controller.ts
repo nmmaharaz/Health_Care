@@ -53,7 +53,7 @@ const changeProfileStatus = catchAsync(async(req: Request & {user?: JwtPayload},
     sendResponse(res, {                                              
         statusCode: 201,
         success: true,
-        message: "Booking created successfully",
+        message: "Users profile status changed!",
         data: result,
     });
 })

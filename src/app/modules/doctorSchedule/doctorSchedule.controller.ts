@@ -10,7 +10,7 @@ const createDoctorSchedule = catchAsync(async(req: Request, res: Response, next:
     sendResponse(res, {
         statusCode: 201,
         success: true,
-        message: "Booking created successfully",
+        message: "Doctor Schedule created successfully",
         data: result,
     });
 })

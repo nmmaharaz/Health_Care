@@ -9,10 +9,10 @@ export function findData(query: Record<string, any>, filterableFields: string[])
     } = query;
 
     // pagination
+    console.log("Hellow Data")
     const pageNumber = Number(page) || 1;
     const limitNumber = Number(limit) || 10;
     const skip = (pageNumber - 1) * limitNumber;
-
     const filters: Record<string, any> = {};
     filterableFields.forEach(field => {
         // console.log(filters, "field")

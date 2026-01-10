@@ -18,7 +18,7 @@ const getSingleDoctor = catchAsync(async (req: Request, res: Response, next: Nex
     sendResponse(res, {
         statusCode: 201,
         success: true,
-        message: "Booking created successfully",
+        message: "Doctor retrieval successfully",
         data: result,
     });
 })

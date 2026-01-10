@@ -13,12 +13,10 @@ export function findData(query: Record<string, any>, filterableFields: string[])
     const skip = (pageNumber - 1) * limitNumber;
     const filters: Record<string, any> = {};
     filterableFields.forEach(field => {
-        // console.log(filters, "field")
         if (rest[field]) {
             filters[field] = rest[field];
         }
     });
-
 
     return { pageNumber, limitNumber, skip, rest, searchTerm, filters, sortBy, sortOrder }
 

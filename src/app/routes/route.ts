@@ -7,6 +7,7 @@ import { SpecialtiesRoute } from "../modules/specialties/specialties.route";
 import { DoctorRoute } from "../modules/doctor/doctor.route";
 import { AppointmentRoute } from "../modules/appoinment/appointment.route";
 import { PrescriptionRoute } from "../modules/prescription/prescription.route";
+import { ReviewRoute } from "../modules/review/review.route";
 
 export const router = Router()
 
@@ -38,14 +39,18 @@ const moduleRoutes = [
     {
         path: "/appointment",
         route: AppointmentRoute
-    }, 
+    },
     {
         path: "/prescription",
         route: PrescriptionRoute
+    },
+    {
+        path: "/review",
+        route: ReviewRoute
     }
-    
+
 ]
 
-moduleRoutes.map((route)=>{
+moduleRoutes.map((route) => {
     router.use(route.path, route.route)
 })

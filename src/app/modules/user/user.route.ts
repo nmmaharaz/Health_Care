@@ -7,12 +7,15 @@ import checkAuth from "../../utils/jwt/checkAuth";
 import { UserRole } from "../../../generated/prisma/enums";
 const router = Router()
 
+router.get("/", checkAuth(UserRole.ADMIN, UserRole.DOCTOR), UserController.getAllUser)
+
 router.post("/create-patient", multerUpload.single("file"), validationRequest(createPatientZodSchema), UserController.createPatient)
 
 router.post("/create-doctor", checkAuth(UserRole.ADMIN), multerUpload.single("file"), validationRequest(createDoctorZodSchema), UserController.createDoctor)
 
 router.post("/create-admin", checkAuth(UserRole.ADMIN), multerUpload.single("file"), validationRequest(createAdminZodSchema), UserController.createAdmin)
 
-router.get("/", checkAuth(UserRole.ADMIN, UserRole.DOCTOR), UserController.getAllUser)
+router.patch("/:id/status", checkAuth(UserRole.ADMIN), UserController.changeProfileStatus)
+
 
 export const UserRoute = router

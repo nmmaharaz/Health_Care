@@ -2,7 +2,7 @@ import prisma from "../../config/db"
 import { envVars } from "../../config/env"
 import bcrypt from "bcryptjs"
 import type { UserCreateInput } from "../../../generated/prisma/models"
-import type { Admin, Doctor, Patient, Prisma } from "../../../generated/prisma/client"
+import type { Admin, Doctor, Patient, Prisma, UserStatus } from "../../../generated/prisma/client"
 import { userFilterableFields, userSearchableFields } from "./user.constant"
 import { findData } from "../../helpers/findUser"
 
@@ -137,10 +137,26 @@ export const getAllUser = async (query: Record<string, any>) => {
     };
 };
 
+const changeProfileStatus = async(id: string, userStatus: UserStatus)=>{
+    await prisma.user.findUniqueOrThrow({
+        where: {
+            id
+        }
+    })
+
+    return await prisma.user.update({
+        where:{
+            id
+        },
+        data: userStatus
+    })
+}
+
 
 export const UserService = {
     createPatient,
     createDoctor,
     createAdmin,
-    getAllUser
+    getAllUser, 
+    changeProfileStatus
 }

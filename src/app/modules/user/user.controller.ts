@@ -48,9 +48,20 @@ const getAllUser = catchAsync(async(req: Request & {user?: JwtPayload}, res: Res
     });
 })
 
+const changeProfileStatus = catchAsync(async(req: Request & {user?: JwtPayload}, res: Response, next: NextFunction)=>{
+    const result = await UserService.changeProfileStatus(req.params.id as string, req.body)
+    sendResponse(res, {                                              
+        statusCode: 201,
+        success: true,
+        message: "Booking created successfully",
+        data: result,
+    });
+})
+
 export const UserController = {
     createPatient,
     createDoctor,
     createAdmin,
-    getAllUser
+    getAllUser,
+    changeProfileStatus
 } 

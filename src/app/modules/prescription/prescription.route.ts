@@ -5,12 +5,12 @@ import { PrescriptionController } from "./prescription.controller";
 
 const router = Router()
 
-router.post("/", checkAuth(UserRole.DOCTOR), PrescriptionController.createPrescription)
-
 router.get(
     '/my-prescription',
     checkAuth(UserRole.PATIENT),
     PrescriptionController.patientPrescription
 )
+    
+router.post("/", checkAuth(UserRole.DOCTOR), PrescriptionController.createPrescription)
 
 export const PrescriptionRoute = router

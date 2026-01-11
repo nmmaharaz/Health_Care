@@ -4,9 +4,10 @@ import { UserStatus } from "../../../generated/prisma/enums"
 import type { ILogin } from "./auth.validation"
 import httpStatus from "http-status-codes"
 import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
+import jwt, { type JwtPayload } from "jsonwebtoken"
 import setAuthCookie from "../../utils/jwt/setAuthCookie"
 import createUserToken from "../../utils/jwt/createUserToken"
+import createNewAccessTokenWithRefreshToken from "../../utils/jwt/createNewAccessTokenWithRefreshToken"
 
 const Login = async (payload: ILogin) => {
     const userExist = await prisma.user.findFirstOrThrow({
@@ -31,6 +32,16 @@ const Login = async (payload: ILogin) => {
     }
 }
 
+const refreshToken = async (refreshToken: string) => {
+    const data = await createNewAccessTokenWithRefreshToken(refreshToken)
+    return {
+        accessToken: data.accessToken,
+        needPasswordChange: data.needPasswordChange
+    }
+}
+
+
 export const AuthService = {
-    Login
+    Login,
+    refreshToken
 }

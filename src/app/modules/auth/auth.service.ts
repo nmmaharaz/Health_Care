@@ -8,6 +8,8 @@ import createUserToken from "../../utils/jwt/createUserToken"
 import createNewAccessTokenWithRefreshToken from "../../utils/jwt/createNewAccessTokenWithRefreshToken"
 import bcrypt from "bcryptjs"
 import { envVars } from "../../config/env"
+import generateToken from "../../utils/jwt/generateToken"
+import { sendEmail } from "../../utils/sendEmail"
 
 const Login = async (payload: ILogin) => {
     const userExist = await prisma.user.findFirstOrThrow({
@@ -74,9 +76,56 @@ const changePassword = async (user: JwtPayload, payload: {
     }
 }
 
+const forgotPassword = async (email: string) => {
+    const userData = await prisma.user.findUniqueOrThrow({
+        where: {
+            email,
+            status: UserStatus.ACTIVE
+        },
+        include:{
+            admin: {
+                select: {
+                    name: true
+                }
+            },
+            doctor: {
+                select: {
+                    name: true
+                }
+            },
+            patient: {
+                select: {
+                    name: true
+                }
+            }
+        }
+    })
+
+
+    const jwtPayload = {
+        userId: userData.id,
+        email: userData.email,
+        role: userData.role
+    }
+
+    const resetPassToken = generateToken(jwtPayload, envVars.jwt.jwt_reset_pass_secret, envVars.jwt.jwt_reset_pass_expires)
+
+    const resetLink = `${envVars.frontend_url}/reset-password?userId=${userData.id}&token=${resetPassToken}`
+    sendEmail({
+        to: userData.email,
+        subject: "Password Reset Request",
+        templateName: "forgetPassword",
+        templateData: {
+            // name: userData.name,
+            resetLink
+        }
+    })
+
+}
 
 export const AuthService = {
     Login,
     refreshToken,
-    changePassword
+    changePassword,
+    forgotPassword
 }

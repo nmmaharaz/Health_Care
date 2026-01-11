@@ -22,9 +22,8 @@ const refreshToken = catchAsync(async (req: Request, res: Response, next: NextFu
     sendResponse(res, {
         statusCode: 201,
         success: true,
-        message: "Booking created successfully",
+        message: "Access token genereated successfully",
         data: {
-            accessToken,
             needPasswordChange
         },
     });

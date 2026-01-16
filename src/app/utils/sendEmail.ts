@@ -3,8 +3,7 @@ import { envVars } from "../config/env";
 import AppError from "../errorHelper/AppError";
 import httpStatus from "http-status-codes"
 import ejs from "ejs"
-
-const nodemailer = require("nodemailer");
+import nodemailer from 'nodemailer'
 
 // Create a transporter using Ethereal test credentials.
 // For production, replace with your actual SMTP server details.

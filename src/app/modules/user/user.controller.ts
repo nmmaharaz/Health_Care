@@ -5,7 +5,7 @@ import { UserService } from "./user.service.js";
 import type { JwtPayload } from "jsonwebtoken";
 
 const createPatient = catchAsync(async(req: Request, res: Response, next: NextFunction)=>{
-    req.body.patient.profilePhoto = (req.file as Express.Multer.File).path
+    req.body.patient.profilePhoto = req.file?.path || ""
     const result = await UserService.createPatient(req.body)
     sendResponse(res, {
         statusCode: 201,

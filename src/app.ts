@@ -27,7 +27,10 @@ app.post(
 // });
 
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+    origin: envVars.frontend_url,
+    credentials: true
+}))
 app.use(cookieParser())
 
 app.use((req, res, next) => {

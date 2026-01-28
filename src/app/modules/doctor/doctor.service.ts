@@ -16,6 +16,7 @@ const getAllDoctor = async (query: Record<string, any>) => {
     const { specialties, ...filterData } = filters;
     const andConditions: Prisma.DoctorWhereInput[] = [];
 
+
     if (specialties && specialties.length > 0) {
         andConditions.push({
             doctorSpecialties: {
@@ -30,6 +31,26 @@ const getAllDoctor = async (query: Record<string, any>) => {
             }
         });
     }
+
+    if (Object.keys(filterData).length > 0) {
+        const filterConditions = Object.keys(filterData).map((key) => ({
+            [key]: filterData[key]
+        }))
+
+        andConditions.push(...filterConditions)
+    }
+
+    if (searchTerm) {
+        andConditions.push({
+            OR: doctorSearchableFields.map((field) => ({
+                [field]: {
+                    contains: searchTerm,
+                    mode: "insensitive"
+                }
+            }))
+        })
+    }
+
 
     const where: Prisma.DoctorWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
@@ -46,7 +67,11 @@ const getAllDoctor = async (query: Record<string, any>) => {
                     specialities: true
                 }
             },
-            doctorSchedules: true
+            reviews: {
+                select: {
+                    rating: true
+                }
+            }
         },
     });
 
@@ -74,11 +99,11 @@ const getSingleDoctor = async (id: string) => {
                     specialities: true
                 }
             },
-            doctorSchedules:true
+            doctorSchedules: true
         },
     });
 
-    return  data
+    return data
 }
 
 const updateDoctorProfile = async (id: string, payload: Partial<IDoctorUpdateInput>) => {
@@ -148,7 +173,7 @@ const getAISuggestions = async (payload: string) => {
 }
 
 const deleteDoctor = async (id: string) => {
-       return await prisma.$transaction(async (transactionClient) => {
+    return await prisma.$transaction(async (transactionClient) => {
         const deleteDoctor = await transactionClient.doctor.delete({
             where: {
                 id,
@@ -166,12 +191,12 @@ const deleteDoctor = async (id: string) => {
 }
 
 const softDeleteDoctor = async (id: string) => {
-       return await prisma.$transaction(async (transactionClient) => {
+    return await prisma.$transaction(async (transactionClient) => {
         const deleteDoctor = await transactionClient.doctor.update({
             where: {
                 id,
             },
-            data:{
+            data: {
                 isDeleted: true
             }
         });
@@ -180,7 +205,7 @@ const softDeleteDoctor = async (id: string) => {
             where: {
                 email: deleteDoctor.email
             },
-            data:{
+            data: {
                 status: UserStatus.DELETED
             }
         });

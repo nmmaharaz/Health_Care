@@ -7,7 +7,7 @@ import type { JwtPayload } from "jsonwebtoken";
 
 const checkAuth = (...authRoles: string[]) => async (req: Request & { user?: JwtPayload }, res: Response, next: NextFunction) => {
     try {
-        console.log("Auth Middleware Invoked", authRoles)
+        // console.log("Auth Middleware Invoked", authRoles)
 
         const accessToken = req.cookies.accessToken;
 

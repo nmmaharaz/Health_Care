@@ -1,3 +1,4 @@
+import { fa } from "zod/v4/locales";
 import { UserStatus, type Prisma } from "../../../generated/prisma/client";
 import { suggestDoctor } from "../../config/ai.config";
 import prisma from "../../config/db";
@@ -60,7 +61,10 @@ const getAllDoctor = async (query: Record<string, any>) => {
         take: limitNumber,
         orderBy: sortBy
             ? { [sortBy]: sortOrder === "desc" ? "desc" : "asc" }
-            : { createdAt: "desc" },
+            : [
+                { isDeleted: "asc" },
+                { createdAt: "desc" }
+            ],
         include: {
             doctorSpecialties: {
                 include: {

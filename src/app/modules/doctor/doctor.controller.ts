@@ -54,6 +54,7 @@ const deleteDoctor = catchAsync(async (req: Request, res: Response, next: NextFu
 })
 
 const softDeleteDoctor = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.params.id, "req.params.id")
     const result = await DoctorService.softDeleteDoctor(req.params.id as string)
     sendResponse(res, {
         statusCode: 201,

@@ -47,9 +47,7 @@ export const createDoctorZodSchema = z.object({
         }),
         specialties: z
             .array(
-                z.string().uuid({
-                    message: "Each specialty must be a valid UUID",
-                })
+                z.string()
             )
             .min(1, {
                 message: "At least one specialty is required",

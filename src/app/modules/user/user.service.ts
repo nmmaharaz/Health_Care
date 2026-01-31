@@ -30,10 +30,10 @@ const createPatient = async (payload: {
 
 const createDoctor = async (payload: {
     password: string,
-    doctor: Doctor & {specialties:string}
+    doctor: Doctor & {specialties:string[]}
 }) => {
     const { specialties, ...doctorData } = payload.doctor;
-    // console.log("Creating doctor with payload:", payload)
+    
     payload.password = await bcrypt.hash(payload.password, Number(envVars.sald_round))
     const result = await prisma.$transaction(async (tx) => {
         await tx.user.create({
@@ -45,23 +45,25 @@ const createDoctor = async (payload: {
         })
 
         const createdDoctorData = await tx.doctor.create({
-            data: payload.doctor
+            data: doctorData
         })
+
          if (specialties && Array.isArray(specialties) && specialties.length > 0) {
             const existingSpecialties = await tx.specialties.findMany({
                 where: {
-                    id: {
+                    title: {
                         in: specialties,
                     },
                 },
                 select: {
-                    id: true,
+                    id:true,
+                    title: true
                 },
             });
 
-            const existingSpecialtyIds = existingSpecialties.map((s) => s.id);
+            const existingSpecialtyTitles = existingSpecialties.map((s) => s.title);
             const invalidSpecialties = specialties.filter(
-                (id) => !existingSpecialtyIds.includes(id)
+                (title) => !existingSpecialtyTitles.includes(title)
             );
 
             if (invalidSpecialties.length > 0) {
@@ -70,8 +72,9 @@ const createDoctor = async (payload: {
                 );
             }
 
-            // Create doctor specialties relations
-            const doctorSpecialtiesData = specialties.map((specialtyId) => ({
+            const specialtiesIds = existingSpecialties.map((s) => s.id);
+            
+            const doctorSpecialtiesData = specialtiesIds.map((specialtyId) => ({
                 doctorId: createdDoctorData.id,
                 specialitiesId: specialtyId,
             }));
@@ -81,7 +84,6 @@ const createDoctor = async (payload: {
             });
         }
 
-        // Step 4: Return doctor with specialties
         const doctorWithSpecialties = await tx.doctor.findUnique({
             where: {
                 id: createdDoctorData.id,

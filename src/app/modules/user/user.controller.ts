@@ -17,7 +17,6 @@ const createPatient = catchAsync(async(req: Request, res: Response, next: NextFu
 
 const createDoctor = catchAsync(async(req: Request, res: Response, next: NextFunction)=>{
     req.body.doctor.profilePhoto = (req.file as Express.Multer.File).path
-    console.log("Request body in createDoctor:", req.body);
     const result = await UserService.createDoctor(req.body)
     sendResponse(res, {
         statusCode: 201,

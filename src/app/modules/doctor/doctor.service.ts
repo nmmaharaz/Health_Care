@@ -15,23 +15,27 @@ const getAllDoctor = async (query: Record<string, any>) => {
     );
 
     const { specialties, ...filterData } = filters;
+    console.log(specialties, "Hellow")
     const andConditions: Prisma.DoctorWhereInput[] = [];
 
-
     if (specialties && specialties.length > 0) {
+        // Convert to array if single string
+        const specialtiesArray = Array.isArray(specialties) ? specialties : [specialties];
+
         andConditions.push({
             doctorSpecialties: {
                 some: {
                     specialities: {
                         title: {
-                            contains: specialties,
-                            mode: "insensitive"
-                        }
-                    }
-                }
-            }
+                            in: specialtiesArray,
+                            mode: "insensitive",
+                        },
+                    },
+                },
+            },
         });
     }
+
 
     if (Object.keys(filterData).length > 0) {
         const filterConditions = Object.keys(filterData).map((key) => ({
@@ -89,6 +93,7 @@ const getAllDoctor = async (query: Record<string, any>) => {
 
     const total = await prisma.doctor.count({ where });
 
+    console.log(data, "data")
     return {
         meta: {
             page: pageNumber,

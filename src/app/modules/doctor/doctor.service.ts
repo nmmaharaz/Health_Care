@@ -9,6 +9,7 @@ import type { IDoctorUpdateInput } from "./doctor.interface";
 import httpStatus from "http-status-codes"
 
 const getAllDoctor = async (query: Record<string, any>) => {
+    console.log("mama")
     const { pageNumber, limitNumber, skip, searchTerm, filters, sortBy, sortOrder } = findData(
         query,
         doctorFilterableFields
@@ -68,7 +69,15 @@ const getAllDoctor = async (query: Record<string, any>) => {
         include: {
             doctorSpecialties: {
                 include: {
-                    specialities: true
+                    specialities:{
+                        select: {
+                            title:true
+                        }
+                    }
+                },
+                omit:{
+                    specialitiesId:true,
+                    doctorId:true
                 }
             },
             reviews: {
@@ -116,7 +125,6 @@ const updateDoctorProfile = async (id: string, payload: Partial<IDoctorUpdateInp
             id
         }
     })
-    console.log("doctorInfo")
     const { specialties, ...doctorData } = payload
     return await prisma.$transaction(async (tnx) => {
         if (specialties && specialties.length > 0) {

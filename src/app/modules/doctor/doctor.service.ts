@@ -9,7 +9,6 @@ import type { IDoctorUpdateInput } from "./doctor.interface";
 import httpStatus from "http-status-codes"
 
 const getAllDoctor = async (query: Record<string, any>) => {
-    console.log("mama")
     const { pageNumber, limitNumber, skip, searchTerm, filters, sortBy, sortOrder } = findData(
         query,
         doctorFilterableFields
@@ -69,15 +68,15 @@ const getAllDoctor = async (query: Record<string, any>) => {
         include: {
             doctorSpecialties: {
                 include: {
-                    specialities:{
+                    specialities: {
                         select: {
-                            title:true
+                            title: true
                         }
                     }
                 },
-                omit:{
-                    specialitiesId:true,
-                    doctorId:true
+                omit: {
+                    specialitiesId: true,
+                    doctorId: true
                 }
             },
             reviews: {
@@ -120,34 +119,81 @@ const getSingleDoctor = async (id: string) => {
 }
 
 const updateDoctorProfile = async (id: string, payload: Partial<IDoctorUpdateInput>) => {
+    console.log(id, "this is id")
     await prisma.doctor.findUniqueOrThrow({
         where: {
             id
         }
     })
     const { specialties, ...doctorData } = payload
+
     return await prisma.$transaction(async (tnx) => {
-        if (specialties && specialties.length > 0) {
-            const deleteSpecialtyIds = specialties.filter((specialty) => specialty.isDeleted)
-            for (const specialty of deleteSpecialtyIds) {
-                await tnx.doctorSpecialties.deleteMany({
-                    where: {
-                        doctorId: id,
-                        specialitiesId: specialty.specialtyId
+
+        if (specialties && Array.isArray(specialties) && specialties.length > 0) {
+            const doctorOldspecialties = await tnx.doctorSpecialties.findMany({
+                where: {
+                    doctorId: id
+                },
+                include: {
+                    specialities: true
+                }
+            })
+            const doctorOldspecialtiesTitle = doctorOldspecialties.map((s) => s.specialities.title);
+
+            const deleteSpecialty = doctorOldspecialtiesTitle.filter(
+                (specialty) => !specialties.includes(specialty)
+            );
+
+            await tnx.doctorSpecialties.deleteMany({
+                where: {
+                    doctorId: id,
+                    specialities: {
+                        title: {
+                            in: deleteSpecialty
+                        }
                     }
-                })
+                }
+            })
+
+
+            const addspecialty = specialties.filter(
+                (specialty) => !doctorOldspecialtiesTitle.includes(specialty)
+            );
+
+            const existingSpecialties = await tnx.specialties.findMany({
+                where: {
+                    title: {
+                        in: addspecialty,
+                    },
+                },
+                select: {
+                    id: true,
+                    title: true
+                },
+            });
+
+            const existingSpecialtyTitles = existingSpecialties.map((s) => s.title);
+
+            const invalidSpecialties = addspecialty.filter(
+                (title) => !existingSpecialtyTitles.includes(title)
+            );
+
+            if (invalidSpecialties.length > 0) {
+                throw new Error(
+                    `Invalid specialty IDs: ${invalidSpecialties.join(", ")}`
+                );
             }
 
-            const createSpecialtyIds = specialties.filter((specialty) => !specialty.isDeleted)
+            const specialtiesIds = existingSpecialties.map((s) => s.id);
 
-            for (const specialty of createSpecialtyIds) {
-                await tnx.doctorSpecialties.create({
-                    data: {
-                        doctorId: id,
-                        specialitiesId: specialty.specialtyId
-                    }
-                })
-            }
+            const doctorSpecialtiesData = specialtiesIds.map((specialtyId) => ({
+                doctorId: id,
+                specialitiesId: specialtyId,
+            }));
+
+            const data = await tnx.doctorSpecialties.createMany({
+                data: doctorSpecialtiesData,
+            });
         }
 
         return await tnx.doctor.update({

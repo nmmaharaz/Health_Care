@@ -9,7 +9,7 @@ const createSchedule = catchAsync(async(req: Request, res: Response, next: NextF
         statusCode: 201,
         success: true,
         message: "Booking created successfully",
-        data: result,
+        data: result
     });
 })
 

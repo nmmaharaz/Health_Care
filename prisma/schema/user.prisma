@@ -60,15 +60,15 @@ model Doctor {
 }
 
 model Patient {
-    id           String   @id @default(uuid())
-    email        String   @unique
-    name         String
-    profilePhoto String?
-    address      String?
-    isDeleted    Boolean  @default(false)
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
-
+    id                String             @id @default(uuid())
+    email             String             @unique
+    name              String
+    profilePhoto      String?
+    address           String?
+    isDeleted         Boolean            @default(false)
+    createdAt         DateTime           @default(now())
+    updatedAt         DateTime           @updatedAt
+    contactNumber     String?
     user              User               @relation(fields: [email], references: [email])
     appointments      Appointment[]
     prescriptions     Prescription[]

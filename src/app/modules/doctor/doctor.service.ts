@@ -15,7 +15,6 @@ const getAllDoctor = async (query: Record<string, any>) => {
     );
 
     const { specialties, ...filterData } = filters;
-    console.log(specialties, "Hellow")
     const andConditions: Prisma.DoctorWhereInput[] = [];
 
     if (specialties && specialties.length > 0) {
@@ -93,7 +92,6 @@ const getAllDoctor = async (query: Record<string, any>) => {
 
     const total = await prisma.doctor.count({ where });
 
-    console.log(data, "data")
     return {
         meta: {
             page: pageNumber,
@@ -124,7 +122,6 @@ const getSingleDoctor = async (id: string) => {
 }
 
 const updateDoctorProfile = async (id: string, payload: Partial<IDoctorUpdateInput>) => {
-    console.log(id, "this is id")
     await prisma.doctor.findUniqueOrThrow({
         where: {
             id

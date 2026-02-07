@@ -66,23 +66,20 @@ const getAllSchedule = async(user: JwtPayload, query: Record<string, any>)=>{
         })
     }
 
-    console.log("Hellow")
     const whereConditions: Prisma.ScheduleWhereInput = andConditions.length > 0 ? {
         AND: andConditions
     } : {}
 
+    const shedule = await new Date().toISOString()
 
     const doctorSchedules = await prisma.doctorSchedules.findMany({
         where: {
             doctor:{email: user.email} 
-            
         },
         select: {
             scheduleId: true
         }
     });
-
-    console.log
 
     const doctorScheduleIds = doctorSchedules.map(schedule => schedule.scheduleId);
 
@@ -91,6 +88,9 @@ const getAllSchedule = async(user: JwtPayload, query: Record<string, any>)=>{
             ...whereConditions,
             id: {
                 notIn: doctorScheduleIds
+            },
+            startDateTime: {
+                gte: shedule
             }
         },
         skip,
@@ -111,9 +111,11 @@ const getAllSchedule = async(user: JwtPayload, query: Record<string, any>)=>{
 
     return {
         meta: {
-            total
+            page: pageNumber,
+            limit: limitNumber,
+            total,
         },
-        data: result
+        data: result,
     };
 }
 

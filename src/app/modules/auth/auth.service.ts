@@ -194,7 +194,6 @@ const getMe = async (user: any) => {
             }
         }
     });
-    console.log(userData, "Userdata")
 
     return userData;
 }

@@ -125,7 +125,6 @@ const getMyAppointment = async (user: JwtPayload, query: Record<string, any>) =>
         andConditions.push(...filterConditions)
     }
     const whereConditions: Prisma.AppointmentWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
-    console.log(whereConditions, "Hellow")
 
     const result = await prisma.appointment.findMany({
         where: whereConditions,

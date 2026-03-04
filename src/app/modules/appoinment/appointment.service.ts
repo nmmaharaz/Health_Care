@@ -230,7 +230,6 @@ const getAllFromDB = async (query: Record<string, string>) => {
 };
 
 const createAppointmentWithPayLater = async (user: JwtPayload, payload: any) => {
-    // console.log(user?.email, "Hellow")
     const patientData = await prisma.patient.findUnique({
         where: {
             email: user?.email

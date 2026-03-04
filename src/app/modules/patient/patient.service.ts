@@ -76,8 +76,6 @@ const getByIdPatient = async (id: string) => {
 
 const updatePatient = async (id: string, payload: Record<string, any>) => {
     const { patientHealthData, medicalReport, ...patientData } = payload;
-    console.log(patientHealthData, "this is health data")
-    console.log(medicalReport, "this is medical report")
     console.log(patientData, "this is patient data")
 
     const patientInfo = await prisma.patient.findUniqueOrThrow({

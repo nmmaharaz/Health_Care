@@ -5,7 +5,6 @@ import { AppointmentService } from "./appointment.service";
 import type { JwtPayload } from "jsonwebtoken";
 
 const createAppointment = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    console.log("Hellow")
     const result = await AppointmentService.createAppointment(req.user, req.body)
     sendResponse(res, {
         statusCode: 201,

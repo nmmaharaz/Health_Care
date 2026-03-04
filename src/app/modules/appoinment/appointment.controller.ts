@@ -35,7 +35,6 @@ const getMyAppointment = catchAsync(async (req: Request, res: Response, next: Ne
 
 
 const createAppointmentWithPayLater = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    // console.log("Hellow")
     const result = await AppointmentService.createAppointmentWithPayLater(req.user as JwtPayload, req.body)
     sendResponse(res, {
         statusCode: 201,

@@ -121,7 +121,6 @@ const getMyAppointment = async (user: JwtPayload, query: Record<string, any>) =>
                 equals: (filters as any)[key]
             }
         }))
-        console.log(...filterConditions, "filterConditions")
         andConditions.push(...filterConditions)
     }
     const whereConditions: Prisma.AppointmentWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};

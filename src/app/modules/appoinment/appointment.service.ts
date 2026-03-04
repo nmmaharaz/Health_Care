@@ -6,6 +6,7 @@ import { findData } from '../../helpers/findUser';
 import { AppointmentStatus, PaymentStatus, UserRole, type Prisma } from '../../../generated/prisma/client';
 import AppError from '../../errorHelper/AppError';
 import httpStatus from "http-status-codes"
+import { appointmentFilterableFields } from './appoinment.constant';
 
 const createAppointment = async (user: JwtPayload, payload: { doctorId: string, scheduleId: string }) => {
     const patientData = await prisma.patient.findUniqueOrThrow({
@@ -94,7 +95,6 @@ const createAppointment = async (user: JwtPayload, payload: { doctorId: string, 
     return result;
 };
 
-
 const getMyAppointment = async (user: JwtPayload, query: Record<string, any>) => {
     const { pageNumber, limitNumber, skip, filters, sortBy, sortOrder, } = findData(query, ["status", "paymentStatus"])
 
@@ -152,7 +152,165 @@ const getMyAppointment = async (user: JwtPayload, query: Record<string, any>) =>
     }
 }
 
-// task get all data from db (appointment data) - admin
+
+const getAllFromDB = async (query: Record<string, string>) => {
+    // const { limit, page, skip } = paginationHelper.calculatePagination(options);
+    // const { patientEmail, doctorEmail, ...filterData } = filters;
+    const { pageNumber, limitNumber, skip, filters, sortBy, sortOrder, } = findData(query, appointmentFilterableFields)
+
+    const {patientEmail, doctorEmail, ...filterData} = filters
+
+    const andConditions: Prisma.AppointmentWhereInput[] = [];
+
+    if (patientEmail) {
+        andConditions.push({
+            patient: {
+                email: patientEmail
+            }
+        })
+    }
+    else if (doctorEmail) {
+        andConditions.push({
+            doctor: {
+                email: doctorEmail
+            }
+        })
+    }
+
+    if (Object.keys(filterData).length > 0) {
+        andConditions.push({
+            AND: Object.keys(filterData).map((key) => {
+                return {
+                    [key]: {
+                        equals: (filterData as any)[key]
+                    }
+                };
+            })
+        });
+    }
+
+    // console.dir(andConditions, { depth: Infinity })
+    const whereConditions: Prisma.AppointmentWhereInput =
+        andConditions.length > 0 ? { AND: andConditions } : {};
+
+    const result = await prisma.appointment.findMany({
+        where: whereConditions,
+        skip,
+        take: limitNumber,
+        orderBy: {
+            [sortBy]: sortOrder
+        },
+        include: {
+            doctor: {
+                include: {
+                    doctorSpecialties: {
+                        include: {
+                            specialities: true
+                        }
+                    }
+                }
+            },
+            patient: true,
+            schedule: true,
+            prescription: true,
+            review: true,
+            payment: true
+        }
+    });
+    const total = await prisma.appointment.count({
+        where: whereConditions
+    });
+
+    return {
+        meta: {
+            page: pageNumber,
+            limit: limitNumber,
+            total,
+        },
+        data: result
+    }
+};
+
+const createAppointmentWithPayLater = async (user: JwtPayload, payload: any) => {
+    // console.log(user?.email, "Hellow")
+    const patientData = await prisma.patient.findUnique({
+        where: {
+            email: user?.email
+        }
+    });
+
+    if (!patientData) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Patient not found")
+    }
+
+    const doctorData = await prisma.doctor.findUnique({
+        where: {
+            id: payload.doctorId,
+            isDeleted: false
+        }
+    });
+
+    if (!doctorData) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Doctor not found")
+    }
+
+    const doctorScheduleData = await prisma.doctorSchedules.findUnique({
+        where: {
+            doctorId_scheduleId: {
+                doctorId: doctorData.id,
+                scheduleId: payload.scheduleId
+            },
+            isBooked: false
+        }
+    });
+    if (!doctorScheduleData) {
+        throw new AppError(httpStatus.BAD_REQUEST, "This schedule is already booked")
+    }
+
+    const videoCallingId = uuidv4();
+
+    const result = await prisma.$transaction(async (tnx) => {
+        const appointmentData = await tnx.appointment.create({
+            data: {
+                patientId: patientData.id,
+                doctorId: doctorData.id,
+                scheduleId: payload.scheduleId,
+                videoCallingId
+            },
+            include: {
+                patient: true,
+                doctor: true,
+                schedule: true
+            }
+        })
+
+        await tnx.doctorSchedules.update({
+            where: {
+                doctorId_scheduleId: {
+                    doctorId: doctorData.id,
+                    scheduleId: payload.scheduleId
+                }
+            },
+            data: {
+                isBooked: true
+            }
+        })
+
+        const transactionId = uuidv4();
+
+        await tnx.payment.create({
+            data: {
+                appointmentId: appointmentData.id,
+                amount: doctorData.appointmentFee,
+                transactionId
+            }
+        })
+
+        return appointmentData;
+    })
+
+    return result;
+};
 
 const updateAppointmentStatus = async (appointmentId: string, status: AppointmentStatus, user: JwtPayload) => {
     const appointmentData = await prisma.appointment.findUniqueOrThrow({
@@ -229,7 +387,9 @@ const cancelUnpaidAppointments = async () => {
 
 export const AppointmentService = {
     createAppointment,
+    getAllFromDB,
     getMyAppointment,
+    createAppointmentWithPayLater,
     updateAppointmentStatus,
     cancelUnpaidAppointments
 };

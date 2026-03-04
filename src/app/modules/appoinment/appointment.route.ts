@@ -5,9 +5,22 @@ import { AppointmentController } from "./appointment.controller";
 
 const router = Router()
 
-router.get("/get-appointments", checkAuth(UserRole.PATIENT, UserRole.DOCTOR), AppointmentController.getMyAppointment)
+router.get(
+    '/',
+    checkAuth(UserRole.ADMIN),
+    AppointmentController.getAllFromDB
+);
+
+router.get("/my-appointment", checkAuth(UserRole.PATIENT, UserRole.DOCTOR), AppointmentController.getMyAppointment)
 
 router.post("/", checkAuth(UserRole.PATIENT), AppointmentController.createAppointment)
+
+router.post(
+    '/pay-later',
+    checkAuth(UserRole.PATIENT),
+    // validationRequest(AppointmentValidation.createAppointment),
+    AppointmentController.createAppointmentWithPayLater
+);
 
 router.patch(
     "/status/:id",

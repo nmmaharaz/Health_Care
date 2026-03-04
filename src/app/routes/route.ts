@@ -10,6 +10,7 @@ import { PrescriptionRoute } from "../modules/prescription/prescription.route";
 import { ReviewRoute } from "../modules/review/review.route";
 import { MetaRoute } from "../modules/metadata/metadata.route";
 import { PatientRoutes } from "../modules/patient/patient.route";
+import { AdminRoutes } from "../modules/admin/admin.route";
 
 export const router = Router()
 
@@ -57,6 +58,10 @@ const moduleRoutes = [
     {
         path: '/metadata',
         route: MetaRoute
+    },
+    {
+        path: "/admin",
+        route: AdminRoutes
     }
 
 ]

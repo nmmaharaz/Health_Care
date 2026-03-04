@@ -70,7 +70,8 @@ const getAllSchedule = async(user: JwtPayload, query: Record<string, any>)=>{
         AND: andConditions
     } : {}
 
-    const shedule = await new Date().toISOString()
+    const shedule = new Date();
+    shedule.setDate(shedule.getDate() - 1);
 
     const doctorSchedules = await prisma.doctorSchedules.findMany({
         where: {
@@ -100,11 +101,16 @@ const getAllSchedule = async(user: JwtPayload, query: Record<string, any>)=>{
         }
     });
 
+    // console.log(result)
+
     const total = await prisma.schedule.count({
         where: {
             ...whereConditions,
             id: {
                 notIn: doctorScheduleIds
+            },
+            startDateTime: {
+                gte: shedule
             }
         }
     });
@@ -119,6 +125,15 @@ const getAllSchedule = async(user: JwtPayload, query: Record<string, any>)=>{
     };
 }
 
+const getSingleSchedule = async(id: string)=>{
+    return await prisma.schedule.findUnique({
+        where: {
+            id 
+        }
+    })
+}
+
+
 const deleteSchedule = async(id: string)=>{
     const result = await prisma.schedule.delete({
         where: {
@@ -129,6 +144,7 @@ const deleteSchedule = async(id: string)=>{
 
 export const ScheduleService = {
   createSchedule,
+  getSingleSchedule,
   getAllSchedule,
   deleteSchedule
 }

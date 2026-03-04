@@ -15,6 +15,15 @@ const createAppointment = catchAsync(async (req: Request, res: Response, next: N
     });
 })
 
+const getAllFromDB = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await AppointmentService.getAllFromDB(req.query as Record<string, string>)
+    sendResponse(res, {
+        statusCode: 201,
+        success: true,
+        message: "Appointment fetched successfully",
+        data: result,
+    });
+})
 const getMyAppointment = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const result = await AppointmentService.getMyAppointment(req.user, req.query)
     sendResponse(res, {
@@ -25,6 +34,18 @@ const getMyAppointment = catchAsync(async (req: Request, res: Response, next: Ne
     });
 })
 
+
+const createAppointmentWithPayLater = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    // console.log("Hellow")
+    const result = await AppointmentService.createAppointmentWithPayLater(req.user as JwtPayload, req.body)
+    sendResponse(res, {
+        statusCode: 201,
+        success: true,
+        message: "Appointment created successfully with pay later",
+        data: result,
+    });
+})
+ 
 const updateAppointmentStatus = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
     const { status } = req.body;
@@ -43,6 +64,8 @@ const updateAppointmentStatus = catchAsync(async (req: Request, res: Response) =
 
 export const AppointmentController = {
     createAppointment,
+    getAllFromDB,
     getMyAppointment,
+    createAppointmentWithPayLater,
     updateAppointmentStatus
 }

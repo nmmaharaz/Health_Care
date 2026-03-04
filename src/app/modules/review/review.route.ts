@@ -5,6 +5,8 @@ import { ReviewController } from './review.controller';
 
 const router = express.Router();
 
+router.get("/", checkAuth(...Object.keys(UserRole)), ReviewController.getAllFromDB);
+
 router.post(
     '/',
     checkAuth(UserRole.PATIENT),

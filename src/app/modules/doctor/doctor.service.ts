@@ -75,7 +75,7 @@ const getAllDoctor = async (query: Record<string, any>) => {
                         select: {
                             title: true
                         }
-                    }
+                    },
                 },
                 omit: {
                     specialitiesId: true,
@@ -85,6 +85,11 @@ const getAllDoctor = async (query: Record<string, any>) => {
             reviews: {
                 select: {
                     rating: true
+                }
+            },
+            doctorSchedules: {
+                include:{
+                    schedule: true
                 }
             }
         },
@@ -104,7 +109,7 @@ const getAllDoctor = async (query: Record<string, any>) => {
 
 const getSingleDoctor = async (id: string) => {
 
-    const data = await prisma.doctor.findMany({
+    const data = await prisma.doctor.findUnique({
         where: {
             id
         },
@@ -114,10 +119,10 @@ const getSingleDoctor = async (id: string) => {
                     specialities: true
                 }
             },
-            doctorSchedules: true
+            doctorSchedules: true,
+            reviews: true
         },
     });
-
     return data
 }
 

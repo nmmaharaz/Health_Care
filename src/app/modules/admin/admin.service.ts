@@ -4,12 +4,9 @@ import { findData } from "../../helpers/findUser";
 import { adminFilterableFields, adminSearchAbleFields } from "./admin.constant";
 
 const getAllFromDB = async (query: Record<string, string>) => {
-    // const { page, limit, skip } = paginationHelper.calculatePagination(options);
-    // const { searchTerm, ...filterData } = params;
     const { pageNumber, limitNumber, searchTerm, skip, filters, sortBy, sortOrder } = findData(query, adminFilterableFields)
 
     const andConditions: Prisma.AdminWhereInput[] = [];
-    // console.log(andConditions, "AndConditions")
 
     if (searchTerm) {
         andConditions.push({
